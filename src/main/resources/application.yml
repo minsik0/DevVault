@@ -1,0 +1,47 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/devvault
+    username: devvault
+    password: devvault1234
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}    # ????? ??
+      embedding:
+        options:
+          model: text-embedding-3-small
+      chat:
+        options:
+          model: gpt-4o-mini
+
+    vectorstore:
+      chroma:
+        client:
+          host: localhost
+          port: 8000
+        collection-name: devvault-docs
+
+jwt:
+  secret: ${JWT_SECRET}             # ????? ??
+  access-expiration: 1800000        # 30?
+  refresh-expiration: 604800000     # 7?
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
