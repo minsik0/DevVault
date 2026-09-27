@@ -1,4 +1,4 @@
-package com.sparta.auth;
+package com.sparta.auth.jwt;
 
 import com.sparta.user.User;
 import com.sparta.user.UserRepository;
