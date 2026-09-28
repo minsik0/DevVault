@@ -1,4 +1,4 @@
-package com.sparta.link;
+package com.sparta.link.entity;
 
 import com.sparta.user.User;
 import jakarta.persistence.*;
@@ -19,7 +19,7 @@ public class Link {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
