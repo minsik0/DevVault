@@ -1,5 +1,7 @@
 package com.sparta.link.service;
 
+import com.sparta.ai.service.RagService;
+import com.sparta.ai.service.SummaryService;
 import com.sparta.link.crawler.MetadataCrawler;
 import com.sparta.link.dto.LinkPageResponse;
 import com.sparta.link.dto.LinkResponse;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,8 @@ public class LinkService {
     private final TagRepository tagRepository;
     private final LinkTagRepository linkTagRepository;
     private final MetadataCrawler metadataCrawler;
+    private final RagService ragService;
+    private final SummaryService summaryService;
 
     private static final int PAGE_SIZE = 20;
 
@@ -43,6 +48,12 @@ public class LinkService {
 
         // 태그 처리
         attachTags(user, link, request.getTags());
+
+        // AI 처리 — 비동기로 실행 (응답 지연 방지)
+        CompletableFuture.runAsync(() -> {
+            summaryService.summarize(link);   // 요약 + 키워드 추출
+            ragService.embedLink(link);        // 벡터 임베딩
+        });
 
         return LinkResponse.from(link);
     }

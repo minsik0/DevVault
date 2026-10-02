@@ -10,6 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface LinkRepository extends JpaRepository<Link, UUID> {
-    List<Link> findByUserIdAndIdLessThanOrderByIdDesc(UUID userId, Long cursorId, Pageable pageable);
-    List<Link> findByUserIdOrderByIdDesc(UUID userId, Pageable pageable);
+    List<Link> findByUserIdAndIdLessThanOrderByIdDesc(Long userId, Long cursorId, Pageable pageable);
+    List<Link> findByUserIdOrderByIdDesc(Long userId, Pageable pageable);
 }
