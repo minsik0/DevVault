@@ -3,6 +3,7 @@ package com.sparta.ai.controller;
 import com.sparta.ai.dto.AskRequest;
 import com.sparta.ai.dto.AskResponse;
 import com.sparta.ai.service.RagService;
+import com.sparta.ai.service.SummaryService;
 import com.sparta.common.response.ApiResponse;
 import com.sparta.link.dto.LinkResponse;
 import com.sparta.link.entity.Link;
@@ -24,6 +25,7 @@ public class AiController {
 
     private final RagService ragService;
     private final LinkRepository linkRepository;
+    private final SummaryService summaryService;
 
     // 링크 수동 임베딩 요청
     @PostMapping("/embed/{linkId}")
@@ -47,5 +49,14 @@ public class AiController {
     public ResponseEntity<ApiResponse<AskResponse>> ask(@AuthenticationPrincipal User user,
                                                         @Valid @RequestBody AskRequest request) {
         return ResponseEntity.ok(ApiResponse.ok(ragService.ask(user, request.getQuestion())));
+    }
+
+    @PostMapping("/summarize/{linkId}")
+    public ResponseEntity<ApiResponse<Void>> summarize(@AuthenticationPrincipal User user,
+                                                       @PathVariable Long linkId) {
+        Link link = linkRepository.findById(linkId)
+                .orElseThrow(() -> new EntityNotFoundException("링크를 찾을 수 없습니다."));
+        summaryService.summarize(link);
+        return ResponseEntity.ok(ApiResponse.ok(null));
     }
 }
