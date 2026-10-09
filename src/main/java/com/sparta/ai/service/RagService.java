@@ -1,5 +1,6 @@
 package com.sparta.ai.service;
 
+import com.sparta.ai.config.AiMetrics;
 import com.sparta.ai.dto.AskResponse;
 import com.sparta.link.dto.LinkResponse;
 import com.sparta.link.entity.Link;
@@ -24,6 +25,7 @@ public class RagService {
     private final ChatClient chatClient;
     private final EmbeddingService embeddingService;
     private final LinkRepository linkRepository;
+    private final AiMetrics aiMetrics;
 
     private static final int SEARCH_TOP_K = 5;
 
@@ -56,6 +58,7 @@ public class RagService {
 
     // RAG 질의응답 — 내 저장글 기반으로 질문
     public AskResponse ask(User user, String question) {
+        return aiMetrics.recordAskLatency(() -> {
         // 1. 유사 문서 검색
         List<Document> docs = vectorStore.similaritySearch(
                 SearchRequest.builder()
@@ -97,5 +100,6 @@ public class RagService {
                 .toList();
 
         return new AskResponse(answer, references);
+        });
     }
 }
